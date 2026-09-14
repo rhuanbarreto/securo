@@ -255,6 +255,17 @@ async def test_update_rejects_null_schedule_field(
         )
 
 
+@pytest.mark.parametrize("day", [0, -1, 32])
+def test_schemas_reject_day_of_month_outside_calendar(day):
+    with pytest.raises(ValidationError):
+        RecurringTransactionUpdate(day_of_month=day)
+    with pytest.raises(ValidationError):
+        RecurringTransactionCreate(
+            description="Rule", amount=Decimal("1"), type="debit", frequency="monthly",
+            start_date=date(2026, 1, 1), account_id=uuid.uuid4(), day_of_month=day,
+        )
+
+
 def test_update_rejects_unsupported_frequency():
     # An unknown cadence would reach _advance_date's monthly fallback and
     # silently turn the rule monthly when the pointer is recomputed.
