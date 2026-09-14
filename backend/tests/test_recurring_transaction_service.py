@@ -4,6 +4,7 @@ from decimal import Decimal
 
 import pytest
 import pytest_asyncio
+from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -239,6 +240,13 @@ async def test_update_frequency_realigns_next_occurrence(
 
     assert updated is not None
     assert updated.next_occurrence == date(2026, 3, 5)
+
+
+def test_update_rejects_unsupported_frequency():
+    # An unknown cadence would reach _advance_date's monthly fallback and
+    # silently turn the rule monthly when the pointer is recomputed.
+    with pytest.raises(ValidationError):
+        RecurringTransactionUpdate(frequency="daily")  # ty: ignore[invalid-argument-type]
 
 
 @pytest.mark.asyncio
