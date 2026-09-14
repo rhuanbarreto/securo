@@ -242,6 +242,19 @@ async def test_update_frequency_realigns_next_occurrence(
     assert updated.next_occurrence == date(2026, 3, 5)
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize("field", ["start_date", "frequency"])
+async def test_update_rejects_null_schedule_field(
+    session: AsyncSession, test_user, test_workspace, test_account_for_recurring, field
+):
+    rec = await _monthly_rule(session, test_workspace, test_user, test_account_for_recurring)
+
+    with pytest.raises(ValueError, match=f"{field} is required"):
+        await update_recurring_transaction(
+            session, rec.id, test_workspace.id, RecurringTransactionUpdate(**{field: None}),
+        )
+
+
 def test_update_rejects_unsupported_frequency():
     # An unknown cadence would reach _advance_date's monthly fallback and
     # silently turn the rule monthly when the pointer is recomputed.

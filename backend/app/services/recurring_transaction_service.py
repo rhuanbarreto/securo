@@ -106,11 +106,9 @@ async def update_recurring_transaction(
 
     update_data = data.model_dump(exclude_unset=True)
 
-    if (
-        "weekend_adjustment" in update_data
-        and update_data["weekend_adjustment"] is None
-    ):
-        raise ValueError("weekend_adjustment is required")
+    for required in ("weekend_adjustment", "start_date", "frequency"):
+        if required in update_data and update_data[required] is None:
+            raise ValueError(f"{required} is required")
 
     # A recurring transaction must always have an account — reject an explicit
     # null, and verify ownership of any new account_id.
