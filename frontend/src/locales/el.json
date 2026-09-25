@@ -1653,7 +1653,7 @@
     "startingBalance": "Αρχικό υπόλοιπο",
     "endingBalance": "Προβλεπόμενο υπόλοιπο",
     "runwayNegativeOn": "Το υπόλοιπο γίνεται αρνητικό στις {{date}}",
-    "runwayStaysPositive": "Το υπόλοιπο παραμένει θετικό σε όλη την πρόβλεψη",
+    "runwayNeverNegative": "Το υπόλοιπο δεν πέφτει ποτέ κάτω από το μηδέν σε όλη την πρόβλεψη",
     "lowestBalanceOn": "Χαμηλότερο υπόλοιπο: {{amount}} στις {{date}}",
     "projectedIncome": "Προβλεπόμενα έσοδα",
     "projectedExpenses": "Προβλεπόμενα έξοδα",

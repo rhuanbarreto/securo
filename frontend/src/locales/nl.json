@@ -1600,7 +1600,7 @@
     "startingBalance": "Beginsaldo",
     "endingBalance": "Geprojecteerd saldo",
     "runwayNegativeOn": "Het saldo wordt negatief op {{date}}",
-    "runwayStaysPositive": "Het saldo blijft positief gedurende de hele prognose",
+    "runwayNeverNegative": "Het saldo komt gedurende de hele prognose nooit onder nul",
     "lowestBalanceOn": "Laagste saldo: {{amount}} op {{date}}",
     "projectedIncome": "Geprojecteerd inkomen",
     "projectedExpenses": "Geprojecteerde uitgaven",

@@ -1598,7 +1598,7 @@
     "startingBalance": "आरंभिक शेष राशि",
     "endingBalance": "अनुमानित शेष राशि",
     "runwayNegativeOn": "{{date}} को शेष राशि ऋणात्मक हो जाती है",
-    "runwayStaysPositive": "पूरे पूर्वानुमान में शेष राशि धनात्मक रहती है",
+    "runwayNeverNegative": "पूरे पूर्वानुमान में शेष राशि कभी शून्य से नीचे नहीं जाती",
     "lowestBalanceOn": "न्यूनतम शेष राशि: {{date}} को {{amount}}",
     "projectedIncome": "अनुमानित आय",
     "projectedExpenses": "अनुमानित खर्च",

@@ -1599,7 +1599,7 @@
     "startingBalance": "Anfangssaldo",
     "endingBalance": "Prognostizierter Saldo",
     "runwayNegativeOn": "Der Saldo wird am {{date}} negativ",
-    "runwayStaysPositive": "Der Saldo bleibt über die gesamte Prognose positiv",
+    "runwayNeverNegative": "Der Saldo fällt in der gesamten Prognose nie unter null",
     "lowestBalanceOn": "Niedrigster Saldo: {{amount}} am {{date}}",
     "projectedIncome": "Prognostizierte Einnahmen",
     "projectedExpenses": "Prognostizierte Ausgaben",
