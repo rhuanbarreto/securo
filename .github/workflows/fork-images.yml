@@ -1,0 +1,91 @@
+name: Fork images
+
+# Builds the images money.rhuan.no runs, from the `deploy` branch of
+# rhuanbarreto/securo. Tags: `<release>-fork.<short sha>` (what the Coolify
+# compose pins) and `deploy` (the branch head).
+
+on:
+  push:
+    branches: [deploy]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: fork-images
+  cancel-in-progress: true
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version-file: backend/.python-version
+          cache: pip
+      - name: Install dependencies
+        run: |
+          pip install -q uv==0.12.17
+          uv export --frozen --all-extras --no-emit-project -o /tmp/requirements-dev.txt
+          pip install --require-hashes -r /tmp/requirements-dev.txt
+          pip install --no-deps -e .
+      - run: ruff check .
+      - run: pytest -n auto --dist loadfile -ra -W error
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint -- --max-warnings=0
+      - run: npm run build
+      - run: npm test
+
+  images:
+    needs: [backend-tests, frontend-tests]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        component: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Version
+        id: version
+        # The release version comes from the source, not from git tags: the
+        # fork does not mirror upstream's tags.
+        run: |
+          base="$(jq -r .version frontend/package.json)"
+          echo "tag=${base}-fork.$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v7
+        with:
+          context: ./${{ matrix.component }}
+          file: ./${{ matrix.component }}/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/securo-${{ matrix.component }}:${{ steps.version.outputs.tag }}
+            ghcr.io/${{ github.repository_owner }}/securo-${{ matrix.component }}:deploy
+          build-args: |
+            VITE_APP_VERSION=${{ steps.version.outputs.tag }}
+          cache-from: type=gha,scope=${{ matrix.component }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.component }}
