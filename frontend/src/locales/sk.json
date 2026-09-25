@@ -2044,7 +2044,7 @@
     "startingBalance": "Počiatočný zostatok",
     "endingBalance": "Predpokladaný zostatok",
     "runwayNegativeOn": "Zostatok bude záporný {{date}}",
-    "runwayStaysPositive": "Zostatok zostane kladný počas celej prognózy",
+    "runwayNeverNegative": "Zostatok neklesne pod nulu počas celej prognózy",
     "lowestBalanceOn": "Najnižší zostatok: {{amount}} dňa {{date}}",
     "projectedIncome": "Predpokladaný príjem",
     "projectedExpenses": "Predpokladané výdavky",

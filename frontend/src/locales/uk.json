@@ -1945,7 +1945,7 @@
     "startingBalance": "Початковий баланс",
     "endingBalance": "Прогнозований баланс",
     "runwayNegativeOn": "Баланс стане від'ємним {{date}}",
-    "runwayStaysPositive": "Баланс залишається додатним протягом усього прогнозу",
+    "runwayNeverNegative": "Баланс не опускається нижче нуля протягом усього прогнозу",
     "lowestBalanceOn": "Найнижчий баланс: {{amount}} на {{date}}",
     "projectedIncome": "Прогнозований дохід",
     "projectedExpenses": "Прогнозовані витрати",

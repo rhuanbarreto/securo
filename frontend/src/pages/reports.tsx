@@ -746,7 +746,7 @@ export default function ReportsPage() {
               <p className="font-semibold">
                 {runwayDate
                   ? t('reports.runwayNegativeOn', { date: formatDay(runwayDate) })
-                  : t('reports.runwayStaysPositive')}
+                  : t('reports.runwayNeverNegative')}
               </p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 {t('reports.lowestBalanceOn', {

@@ -1932,7 +1932,7 @@
     "startingBalance": "Starting Balance",
     "endingBalance": "Projected Balance",
     "runwayNegativeOn": "Balance goes negative on {{date}}",
-    "runwayStaysPositive": "Balance stays positive for the whole forecast",
+    "runwayNeverNegative": "Balance never goes below zero in the forecast",
     "lowestBalanceOn": "Lowest balance: {{amount}} on {{date}}",
     "projectedIncome": "Projected Income",
     "projectedExpenses": "Projected Expenses",
