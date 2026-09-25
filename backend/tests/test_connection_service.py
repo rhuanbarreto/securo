@@ -1292,6 +1292,66 @@ async def test_sync_upserts_matching_csv_import_without_overwriting_user_fields(
 
 
 @pytest.mark.asyncio
+async def test_sync_connection_opening_balance_ignores_removed_phantom(
+    session: AsyncSession, test_user, test_workspace
+):
+    """A re-keyed twin of a transfer-paired row is inserted and then removed as a
+    phantom in the same sync. The opening balance must not keep its amount.
+    """
+    conn = await _make_connection(session, test_user.id, "Rekey Bank")
+
+    account = Account(
+        id=uuid.uuid4(), user_id=test_user.id, workspace_id=test_workspace.id,
+        connection_id=conn.id, external_id="rekey-acc-1", name="Checking",
+        type="checking", balance=Decimal("1000"), currency="NOK",
+    )
+    session.add(account)
+    await session.flush()
+    account_id = account.id
+
+    payment_day = date.today()
+    session.add(Transaction(
+        id=uuid.uuid4(), user_id=test_user.id, workspace_id=test_workspace.id,
+        account_id=account_id, external_id="card-payment-old-key",
+        description="Card payment", amount=Decimal("700.00"),
+        date=payment_day, type="debit", status="posted", source="sync",
+        currency="NOK", transfer_pair_id=uuid.uuid4(),
+        created_at=datetime.now(timezone.utc),
+    ))
+    await session.commit()
+
+    mock_provider = AsyncMock()
+    mock_provider.refresh_credentials = AsyncMock(return_value={"token": "t"})
+    mock_provider.get_accounts = AsyncMock(return_value=[
+        AccountData(
+            external_id="rekey-acc-1", name="Checking", type="checking",
+            balance=Decimal("1000"), currency="NOK",
+        ),
+    ])
+    mock_provider.get_transactions = AsyncMock(return_value=[
+        TransactionData(
+            external_id="card-payment-new-key", description="Card payment",
+            amount=Decimal("700.00"), date=payment_day, type="debit",
+            currency="NOK", status="posted",
+        ),
+    ])
+
+    with patch("app.services.connection_service.get_provider", return_value=mock_provider),          patch("app.services.connection_service.detect_transfer_pairs", new_callable=AsyncMock),          patch("app.services.connection_service.stamp_primary_amount", new_callable=AsyncMock),          patch("app.services.connection_service.apply_rules_to_transaction", new_callable=AsyncMock):
+        await sync_connection(session, conn.id, test_workspace.id, test_user.id)
+
+    rows = (await session.execute(
+        select(Transaction).where(Transaction.account_id == account_id)
+    )).scalars().all()
+    synced = [row for row in rows if row.source != "opening_balance"]
+    assert [row.external_id for row in synced] == ["card-payment-old-key"]
+
+    signed_total = sum(
+        row.amount if row.type == "credit" else -row.amount for row in rows
+    )
+    assert signed_total == Decimal("1000")
+
+
+@pytest.mark.asyncio
 async def test_sync_connection_tolerates_duplicate_transaction_rows(
     session: AsyncSession, test_user, test_workspace
 ):
