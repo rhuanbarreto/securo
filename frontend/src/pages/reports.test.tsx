@@ -262,16 +262,19 @@ describe('Reports page — cash-flow runway', () => {
     )
   })
 
-  it('reports a balance that stays positive through the horizon', async () => {
+  it.each([
+    [400, '$400.00'],
+    [0, '$0.00'],
+  ])('reports a lowest balance of %d as never going below zero', async (lowest, amount) => {
     const callout = await openCashFlow({
       runway_date: null,
-      lowest_balance: 400,
+      lowest_balance: lowest,
       lowest_balance_date: '2026-12-01',
     })
 
-    expect(callout).toHaveTextContent(t('reports.runwayStaysPositive'))
+    expect(callout).toHaveTextContent(t('reports.runwayNeverNegative'))
     expect(callout).toHaveTextContent(
-      t('reports.lowestBalanceOn', { amount: '$400.00', date: 'Dec 1, 2026' }),
+      t('reports.lowestBalanceOn', { amount, date: 'Dec 1, 2026' }),
     )
   })
 

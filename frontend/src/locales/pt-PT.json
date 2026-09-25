@@ -1933,7 +1933,7 @@
     "startingBalance": "Saldo Atual",
     "endingBalance": "Saldo Projetado",
     "runwayNegativeOn": "O saldo fica negativo a {{date}}",
-    "runwayStaysPositive": "O saldo mantém-se positivo durante toda a projeção",
+    "runwayNeverNegative": "O saldo nunca fica abaixo de zero durante toda a projeção",
     "lowestBalanceOn": "Saldo mais baixo: {{amount}} a {{date}}",
     "projectedIncome": "Receita Projetada",
     "projectedExpenses": "Despesa Projetada",

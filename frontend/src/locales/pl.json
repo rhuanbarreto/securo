@@ -2017,7 +2017,7 @@
     "startingBalance": "Saldo początkowe",
     "endingBalance": "Saldo prognozowane",
     "runwayNegativeOn": "Saldo spadnie poniżej zera {{date}}",
-    "runwayStaysPositive": "Saldo pozostaje dodatnie przez cały okres prognozy",
+    "runwayNeverNegative": "Saldo nie spada poniżej zera przez cały okres prognozy",
     "lowestBalanceOn": "Najniższe saldo: {{amount}} w dniu {{date}}",
     "projectedIncome": "Prognozowane przychody",
     "projectedExpenses": "Prognozowane wydatki",
