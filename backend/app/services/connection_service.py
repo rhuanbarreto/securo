@@ -2379,12 +2379,16 @@ async def sync_connection(
         touched_account_ids = await _cleanup_phantom_duplicates(session, connection.id)
 
         # The opening balances above were reconciled with the phantoms still
-        # counted. Reconcile the accounts that lost one again, so the removed
-        # amount does not stay behind in their synthetic opening transaction.
+        # counted. Reconcile the open accounts that lost one again, so the
+        # removed amount does not stay behind in their synthetic opening
+        # transaction. Closed accounts stay out, as in the account loop.
         if touched_account_ids:
             await session.flush()
             touched_accounts = await session.execute(
-                select(Account).where(Account.id.in_(touched_account_ids))
+                select(Account).where(
+                    Account.id.in_(touched_account_ids),
+                    Account.is_closed == False,
+                )
             )
             for touched_account in touched_accounts.scalars():
                 await sync_opening_balance_for_connected_account(session, touched_account)
