@@ -1,0 +1,5 @@
+# Branches on github.com/rhuanbarreto/securo carried on top of the latest
+# upstream release, applied in this order. Each carries the commits it adds
+# over upstream main. Drop a line once its PR ships in a release.
+fix/opening-balance-after-phantom-cleanup
+feat/cash-flow-runway
