@@ -1,0 +1,7 @@
+# Branches on github.com/rhuanbarreto/securo carried on top of the latest
+# upstream release, applied in this order. Each carries the commits it adds
+# over upstream main. Drop a line once its PR ships in a release.
+# fix/enable-banking-psu-headers: #1400
+# fix/sync-backoff-failing-connections: #1401, merged into main after v0.18.0
+fix/enable-banking-psu-headers
+fix/sync-backoff-failing-connections
